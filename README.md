@@ -1,6 +1,6 @@
 # Video-Proccessing-and-Storaging-Service
 
-# Project mẫu: https://github.com/superdesk/video-server
+# Project tham khảo: https://github.com/superdesk/video-server
 
 # Thành viên nhóm 23
 1. Trần Minh Mẫn - 20110301
