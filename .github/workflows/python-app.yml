@@ -1,0 +1,125 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Pytest
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions: read-all
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.7"
+
+    - name: Install mongodb
+      run: |
+        sudo apt-get install gnupg
+
+        curl -fsSL https://pgp.mongodb.com/server-6.0.asc | \
+        sudo gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg \
+        --dearmor
+
+        echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+        
+        sudo apt-get update
+
+        sudo apt-get install -y mongodb-org
+
+        echo "mongodb-org hold" | sudo dpkg --set-selections
+        echo "mongodb-org-database hold" | sudo dpkg --set-selections
+        echo "mongodb-org-server hold" | sudo dpkg --set-selections
+        echo "mongodb-mongosh hold" | sudo dpkg --set-selections
+        echo "mongodb-org-mongos hold" | sudo dpkg --set-selections
+        echo "mongodb-org-tools hold" | sudo dpkg --set-selections
+
+    - name: Start MongoDB
+      run: sudo systemctl start mongod
+    - name: Install FFmpeg
+      run: sudo apt install ffmpeg -y
+    - name: Install RabbitMQ
+      run: |
+        sudo apt-get update -y
+
+        sudo apt-get install curl gnupg apt-transport-https -y
+
+        curl -1sLf "https://keys.openpgp.org/vks/v1/by-fingerprint/0A9AF2115F4687BD29803A206B73A36E6026DFCA" | sudo gpg --dearmor | sudo tee /usr/share/keyrings/com.rabbitmq.team.gpg > /dev/null
+        
+        curl -1sLf "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xf77f1eda57ebb1cc" | sudo gpg --dearmor | sudo tee /usr/share/keyrings/net.launchpad.ppa.rabbitmq.erlang.gpg > /dev/null
+        
+        curl -1sLf "https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey" | sudo gpg --dearmor | sudo tee /usr/share/keyrings/io.packagecloud.rabbitmq.gpg > /dev/null
+
+        sudo tee /etc/apt/sources.list.d/rabbitmq.list <<EOF
+        
+        deb [signed-by=/usr/share/keyrings/net.launchpad.ppa.rabbitmq.erlang.gpg] http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu bionic main
+        deb-src [signed-by=/usr/share/keyrings/net.launchpad.ppa.rabbitmq.erlang.gpg] http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu bionic main
+
+        
+        deb [signed-by=/usr/share/keyrings/io.packagecloud.rabbitmq.gpg] https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/ bionic main
+        deb-src [signed-by=/usr/share/keyrings/io.packagecloud.rabbitmq.gpg] https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/ bionic main
+        EOF
+
+        
+        sudo apt-get update -y
+
+        
+        sudo apt-get install -y erlang-base \
+                                erlang-asn1 erlang-crypto erlang-eldap erlang-ftp erlang-inets \
+                                erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key \
+                                erlang-runtime-tools erlang-snmp erlang-ssl \
+                                erlang-syntax-tools erlang-tftp erlang-tools erlang-xmerl
+
+        
+        sudo apt-get install rabbitmq-server -y --fix-missing
+    - name: Start RabbitMQ
+      run: sudo systemctl start rabbitmq-server
+    - name: Install dependencies + Local Test
+      run: |
+        pip install --upgrade pip
+        python3 -m venv venv
+        source venv/bin/activate
+        echo "VIRTUAL ENV:" $VIRTUAL_ENV
+        pip install flake8 pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install -e video-server/[dev]
+        pip install pytest==6.2.5
+        pip install cerberus
+        pip install pytest-html
+        sudo chmod +x /home/runner/work/Video-Proccessing-and-Storaging-Service_Nhom23_Detai15/Video-Proccessing-and-Storaging-Service_Nhom23_Detai15/video-server/src/videoserver/lib/video_editor/script/capture_list_frames.sh
+        pytest --html=report.html
+    #     git config --global user.email "nguyenminhson102002@gmail.com"
+    #     git config --global user.name "NMS1010"
+    #     git add 'report.html'
+    #     git commit -m "Add pytest report"
+    # - name: Push changes
+    #   uses: ad-m/github-push-action@master
+    #   with:
+    #     github_token: ${{ secrets.GITHUB_TOKEN }}
+#     - name: SSH into EC2 instance + Deploy
+#       uses: appleboy/ssh-action@master
+#       with:
+#         host: ${{ secrets.SSH_HOST }}
+#         username: ${{ secrets.SSH_USERNAME }}
+#         key: ${{ secrets.SSH_PRIVATE_KEY }}
+#         port: ${{ secrets.SSH_PORT }}
+#         script: |
+#           git clone https://github.com/NMS1010/Video-Proccessing-and-Storaging-Service_Nhom23_Detai15
+#           cd TestGitHubAction/
+#           sudo apt-get update
+#           sudo apt-get install -y docker.io
+#           sudo systemctl start docker
+#           sudo systemctl enable docker
+#           sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+#           sudo chmod +x /usr/local/bin/docker-compose
+#           sudo docker-compose down
+#           sudo docker-compose up -d
