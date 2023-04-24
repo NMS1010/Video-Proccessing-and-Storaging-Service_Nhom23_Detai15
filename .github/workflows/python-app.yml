@@ -97,13 +97,16 @@ jobs:
         pip install pytest-html
         sudo chmod +x /home/runner/work/Video-Proccessing-and-Storaging-Service_Nhom23_Detai15/Video-Proccessing-and-Storaging-Service_Nhom23_Detai15/video-server/src/videoserver/lib/video_editor/script/capture_list_frames.sh
         pytest --html=report.html
-    - name: Commit and Push test report
+    - name: Commit file
       run: |
         git config --global user.email "nguyenminhson102002@gmail.com"
         git config --global user.name "NMS1010"
         git add 'report.html'
         git commit -m "Add pytest report"
-        git push
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 #     - name: SSH into EC2 instance + Deploy
 #       uses: appleboy/ssh-action@master
 #       with:
