@@ -91,7 +91,6 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip install -e video-server/[dev]
         pip install pytest==6.2.5
-        pip install cerberus
         pip install pytest-html
     - name: Run tests
       run: |
