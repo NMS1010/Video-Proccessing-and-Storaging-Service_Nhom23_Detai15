@@ -17,8 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-      with:
-        token: ${{ secrets.GH_TOKEN }}
     - name: Set up Python 3.7
       uses: actions/setup-python@v3
       with:
@@ -98,26 +96,26 @@ jobs:
     - name: Run tests
       run: |
         source venv/bin/activate
-        sudo chmod +x /home/runner/work/TestGitHubAction/TestGitHubAction/video-server/src/videoserver/lib/video_editor/script/capture_list_frames.sh
+        sudo chmod +x /home/runner/work/Video-Proccessing-and-Storaging-Service_Nhom23_Detai15/Video-Proccessing-and-Storaging-Service_Nhom23_Detai15/video-server/src/videoserver/lib/video_editor/script/capture_list_frames.sh
         pytest --html=report.html --self-contained-html
     - name: Upload Test Report
       uses: actions/upload-artifact@v2
       with:
         name: Test Report
         path: report.html
-  scan:
-    name: Sonarqube - Code Quanlity Scan
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: SonarCloud scan
-      uses: sonarsource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  # scan:
+  #   name: Sonarqube - Code Quanlity Scan
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: SonarCloud scan
+  #     uses: sonarsource/sonarcloud-github-action@master
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   deploy:
-    needs: scan
+    needs: build
     name: Deploy to EC2
     runs-on: ubuntu-latest
     steps:
@@ -130,8 +128,8 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: ${{ secrets.SSH_PORT }}
         script: |
-          git clone https://github.com/NMS1010/TestGitHubAction
-          cd TestGitHubAction/
+          git clone https://github.com/NMS1010/Video-Proccessing-and-Storaging-Service_Nhom23_Detai15
+          cd Video-Proccessing-and-Storaging-Service_Nhom23_Detai15/
           sudo apt-get update
           sudo apt-get install -y docker.io
           sudo systemctl start docker
