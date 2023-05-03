@@ -127,7 +127,13 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: ${{ secrets.SSH_PORT }}
         script: |
-          git clone https://github.com/NMS1010/Video-Proccessing-and-Storaging-Service_Nhom23_Detai15
+          if [ -d "Video-Proccessing-and-Storaging-Service_Nhom23_Detai15" ]; then
+            cd Video-Proccessing-and-Storaging-Service_Nhom23_Detai15
+            git pull https://github.com/NMS1010/Video-Proccessing-and-Storaging-Service_Nhom23_Detai15 && \echo "Pull completed"
+            cd ../
+          else
+            git clone https://github.com/NMS1010/Video-Proccessing-and-Storaging-Service_Nhom23_Detai15 && \echo "Clone completed"
+          fi
           cd Video-Proccessing-and-Storaging-Service_Nhom23_Detai15/
           sudo apt-get update
           sudo apt-get install -y docker.io
@@ -135,6 +141,11 @@ jobs:
           sudo systemctl enable docker
           sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
+
+          docker stop video-server-mongodb || true && docker rm video-server-mongodb || true
+          docker stop video-server-rabbitmq || true && docker rm video-server-rabbitmq || true
+          docker stop video-server || true && docker rm video-server || true
+          
           sudo docker-compose down
-          sudo docker-compose up -d
+          sudo docker-compose up -d --build
 
