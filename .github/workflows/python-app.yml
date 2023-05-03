@@ -114,7 +114,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   deploy:
-    needs: build
+    needs: scan
     name: Deploy to EC2
     runs-on: ubuntu-latest
     steps:
