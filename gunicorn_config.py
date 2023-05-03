@@ -8,4 +8,4 @@ access_log_format = '%(m)s %(U)s status=%(s)s time=%(T)ss size=%(B)sb'
 
 reload = True
 
-timeout = int(os.environ.get('WEB_TIMEOUT', 100))
+timeout = int(os.environ.get('WEB_TIMEOUT', 600))

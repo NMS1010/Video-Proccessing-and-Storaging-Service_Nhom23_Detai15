@@ -95,7 +95,7 @@ jobs:
     - name: Run tests
       run: |
         source venv/bin/activate
-        sudo chmod +x /home/runner/work/Video-Proccessing-and-Storaging-Service_Nhom23_Detai15/Video-Proccessing-and-Storaging-Service_Nhom23_Detai15/video-server/src/videoserver/lib/video_editor/script/capture_list_frames.sh
+        sudo chmod +x ./video-server/src/videoserver/lib/video_editor/script/capture_list_frames.sh
         pytest --html=report.html --self-contained-html
     - name: Upload Test Report
       uses: actions/upload-artifact@v2
@@ -103,7 +103,7 @@ jobs:
         name: Test Report
         path: report.html
   # scan:
-  #   name: Sonarqube - Code Quanlity Scan
+  #   name: Sonarqube - Code Quality Scan
   #   needs: build
   #   runs-on: ubuntu-latest
   #   steps:
@@ -142,9 +142,9 @@ jobs:
           sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
 
-          docker stop video-server-mongodb || true && docker rm video-server-mongodb || true
-          docker stop video-server-rabbitmq || true && docker rm video-server-rabbitmq || true
-          docker stop video-server || true && docker rm video-server || true
+          sudo docker stop video-server-mongodb || true && sudo docker rm video-server-mongodb || true
+          sudo docker stop video-server-rabbitmq || true && sudo docker rm video-server-rabbitmq || true
+          sudo docker stop video-server || true && sudo docker rm video-server || true
           
           sudo docker-compose down
           sudo docker-compose up -d --build
