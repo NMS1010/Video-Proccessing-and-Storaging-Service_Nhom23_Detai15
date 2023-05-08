@@ -1,0 +1,1370 @@
+{
+	"info": {
+		"_postman_id": "8046e282-9848-4613-92d3-9e0e34fbd625",
+		"name": "API Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16899417",
+		"_collection_link": "https://cloudy-rocket-253658.postman.co/workspace/Team-Workspace~27f18470-abc7-475f-8e6e-09624a6269f6/collection/16899417-8046e282-9848-4613-92d3-9e0e34fbd625?action=share&creator=16899417&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Retrieve Project",
+			"item": [
+				{
+					"name": "Upload Project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('projectId', pm.response.json()['_id'])"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video01.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get project success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"console.log(resp.json())\r",
+									"tests[\"Status code is 200\"] = resp.code === 200\r",
+									"\r",
+									"tests[\"Contain video URL\"] = typeof resp.json().url === 'string' && resp.json().url !== ''\r",
+									"\r",
+									"tests[\"Contain video storage_id\"] = typeof resp.json()['storage_id'] === 'string' && resp.json()['storage_id'] !== '' && resp.json()['storage_id'].includes('.mp4')\r",
+									"\r",
+									"tests[\"Contain video filename\"] = typeof resp.json()['filename'] === 'string' && resp.json()['filename'] !== '' && resp.json()['filename'].includes('.mp4')\r",
+									"\r",
+									"tests[\"Codec name is h264\"] = typeof resp.json()['metadata']['codec_name'] === 'string' && resp.json()['metadata']['codec_name'] === 'h264'\r",
+									"\r",
+									"tests[\"Width x Height is 1280 x 720\"] = typeof resp.json()['metadata']['width'] === 'number' && resp.json()['metadata']['width'] === 1280 && typeof resp.json()['metadata']['height'] === 'number' && resp.json()['metadata']['height'] === 720"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Format Id doesn't match",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests[\"Status code is 404\"] = resp.code === 404\r",
+									"\r",
+									"tests[\"Contain errors\"] = typeof resp.json().error === 'string' && resp.json().error === \"Project with id '\"+ pm.environment.get('not_obj_id') +\"' was not found.\""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{not_obj_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{not_obj_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Project is not found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests[\"Status code is 404\"] = resp.code === 404\r",
+									"tests[\"Contain errors\"] = typeof resp.json().error === 'string' && resp.json().error === \"Project with id '\"+ pm.environment.get('wrong_id') +\"' was not found.\"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{wrong_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{wrong_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Duplicate before retrieve",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let url = pm.environment.get('url') + '/' + pm.environment.get('projectId') + '/duplicate'\r",
+									"const postRequest = {\r",
+									"  url: url,\r",
+									"  method: 'POST'\r",
+									"};\r",
+									"pm.sendRequest(postRequest, (error, response) => {\r",
+									"  console.log(error ? error : response.json());\r",
+									"  if(!error){\r",
+									"      pm.environment.set('project_dup', JSON.stringify(response.json()))\r",
+									"  }\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let project_dup = pm.environment.get('project_dup')\r",
+									"if(project_dup){\r",
+									"    let proj = JSON.parse(project_dup)\r",
+									"    let resp = pm.response;\r",
+									"    tests['Current project is parent of duplicate project'] = proj.parent !== null && proj.parent === resp.json()['_id']\r",
+									"    tests['Two project has same filename'] = proj['filename'] === resp.json()['filename']\r",
+									"    tests['Version is different'] = proj['version'] !== resp.json()['version']\r",
+									"\r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('url') + '/' + proj['_id'],\r",
+									"        method: \"DELETE\"\r",
+									"    }, function(err, res) {\r",
+									"        console.log(err);\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete before retrieve",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId'),\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests[\"Status code is 404\"] = resp.code === 404\r",
+									"tests[\"Contain errors\"] = typeof resp.json().error === 'string' && resp.json().error === \"Project with id '\"+ pm.environment.get('projectId') +\"' was not found.\"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Duplicate Project",
+			"item": [
+				{
+					"name": "Create Project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('projectId', pm.response.json()['_id'])\r",
+									"pm.environment.set('initial_project', JSON.stringify(pm.response.json()))"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video01.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Duplicate project success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests['Status code is 201'] = pm.response.code === 201\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.response.json()['_id'],\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/duplicate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"duplicate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Project is not found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests[\"Status code is 404\"] = resp.code === 404\r",
+									"tests[\"Contain errors\"] = typeof resp.json().error === 'string' && resp.json().error === \"Project with id '\"+ pm.environment.get('wrong_id') +\"' was not found.\"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{wrong_id}}/duplicate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{wrong_id}}",
+								"duplicate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Two projects have same information",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let temp = pm.environment.get('initial_project')\r",
+									"if(temp){\r",
+									"    let initial_project = JSON.parse(temp)\r",
+									"    let dup_project = pm.response.json();\r",
+									"\r",
+									"    pm.environment.set('dup_projectId', dup_project['_id'])\r",
+									"    pm.environment.set('dup_project1', JSON.stringify(dup_project))\r",
+									"    \r",
+									"    tests['Current project is child of initial project'] = dup_project.parent !== null && dup_project.parent === initial_project['_id']\r",
+									"    tests['Two project has same filename'] = initial_project['filename'] === dup_project['filename'] && initial_project['original_filename'] === dup_project['original_filename']\r",
+									"    tests['Version is different'] = initial_project['version'] !== dup_project['version'] && \r",
+									"    initial_project['version'] === 1 && dup_project['version'] === 2\r",
+									"\r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('url') + '/' + dup_project['_id'],\r",
+									"        method: \"DELETE\"\r",
+									"    }, function(err, res) {\r",
+									"        console.log(err);\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/duplicate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"duplicate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Duplicate a duplicated project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let temp = pm.environment.get('initial_project')\r",
+									"if(temp){\r",
+									"    let initial_project = JSON.parse(temp)\r",
+									"    let dup_project = pm.response.json();\r",
+									"    \r",
+									"    tests['Status code is 201'] = pm.response.code === 201\r",
+									"\r",
+									"    tests['Two project has same filename'] = initial_project['filename'] === dup_project['filename'] && initial_project['original_filename'] === dup_project['original_filename']\r",
+									"\r",
+									"    tests['Version is different'] = initial_project['version'] !== dup_project['version'] && \r",
+									"    initial_project['version'] === 1 && dup_project['version'] === 3\r",
+									"\r",
+									"    let initial_project_metadata = initial_project['metadata']\r",
+									"    let dup_project_metadata = dup_project['metadata']\r",
+									"    tests['Meta data is same'] = initial_project_metadata['codec_name'] === dup_project_metadata['codec_name'] && initial_project_metadata['width'] === dup_project_metadata['width'] && initial_project_metadata['height'] === dup_project_metadata['height'] && initial_project_metadata['duration'] === dup_project_metadata['duration'] && initial_project_metadata['size'] === dup_project_metadata['size'] && initial_project_metadata['bit_rate'] === dup_project_metadata['bit_rate']\r",
+									"\r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('url') + '/' + dup_project['_id'],\r",
+									"        method: \"DELETE\"\r",
+									"    }, function(err, res) {\r",
+									"        console.log(err);\r",
+									"    });\r",
+									"    pm.sendRequest({\r",
+									"        url: pm.environment.get('url') + '/' + pm.environment.get('dup_projectId'),\r",
+									"        method: \"DELETE\"\r",
+									"    }, function(err, res) {\r",
+									"        console.log(err);\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let url = pm.environment.get('url') + '/' + pm.environment.get('projectId') + '/duplicate'\r",
+									"const postRequest = {\r",
+									"  url: url,\r",
+									"  method: 'POST'\r",
+									"};\r",
+									"pm.sendRequest(postRequest, (error, response) => {\r",
+									"  console.log(error ? error : response.json());\r",
+									"  if(!error){\r",
+									"      pm.environment.set('dup_projectId', response.json()['_id'])\r",
+									"  }\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{dup_projectId}}/duplicate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{dup_projectId}}",
+								"duplicate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Duplicate an edit project",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let url = pm.environment.get('url') + '/' + pm.environment.get('projectId') + '/duplicate'\r",
+									"const postRequest = {\r",
+									"  url: url,\r",
+									"  method: 'POST'\r",
+									"};\r",
+									"pm.sendRequest(postRequest, (error, response) => {\r",
+									"    if(!error){\r",
+									"        let dupId = response.json()['_id']\r",
+									"        url = pm.environment.get('url') + '/' + dupId\r",
+									"        const formData = {\r",
+									"            \"crop\": \"10,10,480,360\",\r",
+									"            \"rotate\": 90,\r",
+									"            \"scale\": 800,\r",
+									"            \"trim\": \"5.1,10.5\"\r",
+									"        };\r",
+									"        const editVideoReq = {\r",
+									"            url: url,\r",
+									"            method: 'PUT',\r",
+									"            header: {\r",
+									"                'Content-type': 'application/json'\r",
+									"            },\r",
+									"            body: {\r",
+									"                mode: 'raw',\r",
+									"                raw: JSON.stringify(formData)\r",
+									"            }\r",
+									"            };\r",
+									"            pm.sendRequest(editVideoReq, (error, response) => {\r",
+									"            if(!error){\r",
+									"                pm.environment.set('edit_projectId', dupId)\r",
+									"            }\r",
+									"        });\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests['Conflict'] = pm.response.code === 409\r",
+									"tests['Processing'] = pm.response.json()['processing'][0] === \"Some tasks is still processing\"\r",
+									"\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.response.json()['_id'],\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.response.json()['edit_projectId'],\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId'),\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{edit_projectId}}/duplicate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{edit_projectId}}",
+								"duplicate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get Raw Video",
+			"item": [
+				{
+					"name": "Create Project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('projectId', pm.response.json()['_id'])\r",
+									"pm.environment.set('initial_project', JSON.stringify(pm.response.json()))"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video01.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get full video",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"tests['Status code is 200 OK'] = pm.response.code === 200\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/raw/video",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"raw",
+								"video"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get partial video",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"tests['Status code is 206 Partial Content'] = pm.response.code === 206\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Range",
+								"value": "bytes=200-",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/raw/video",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"raw",
+								"video"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Conflict while get video",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let url = pm.environment.get('url') + '/' + pm.environment.get('projectId') + '/duplicate'\r",
+									"const postRequest = {\r",
+									"  url: url,\r",
+									"  method: 'POST'\r",
+									"};\r",
+									"pm.sendRequest(postRequest, (error, response) => {\r",
+									"    if(!error){\r",
+									"        let dupId = response.json()['_id']\r",
+									"        url = pm.environment.get('url') + '/' + dupId\r",
+									"        const formData = {\r",
+									"            \"crop\": \"10,10,480,360\",\r",
+									"            \"rotate\": 90,\r",
+									"            \"scale\": 800,\r",
+									"            \"trim\": \"5.1,10.5\"\r",
+									"        };\r",
+									"        const editVideoReq = {\r",
+									"            url: url,\r",
+									"            method: 'PUT',\r",
+									"            header: {\r",
+									"                'Content-type': 'application/json'\r",
+									"            },\r",
+									"            body: {\r",
+									"                mode: 'raw',\r",
+									"                raw: JSON.stringify(formData)\r",
+									"            }\r",
+									"            };\r",
+									"            pm.sendRequest(editVideoReq, (error, response) => {\r",
+									"            if(!error){\r",
+									"                pm.environment.set('edit_projectId', dupId)\r",
+									"            }\r",
+									"        });\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"\r",
+									"tests['Status code is 409 Conflict'] = pm.response.code === 409\r",
+									"tests['Processing'] = pm.response.json()['processing'][0] === \"Task edit video is still processing\"\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.environment.get('edit_projectId'),\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{edit_projectId}}/raw/video",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{edit_projectId}}",
+								"raw",
+								"video"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Video is not found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests[\"Status code is 404\"] = resp.code === 404\r",
+									"tests[\"Contain errors\"] = typeof resp.json().error === 'string' && resp.json().error === \"Project with id '\"+ pm.environment.get('wrong_id') +\"' was not found.\"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{wrong_id}}/raw/video",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{wrong_id}}",
+								"raw",
+								"video"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Format Id doesn't mactch",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests[\"Status code is 404\"] = resp.code === 404\r",
+									"\r",
+									"tests[\"Contain errors\"] = typeof resp.json().error === 'string' && resp.json().error === \"Project with id '\"+ pm.environment.get('not_obj_id') +\"' was not found.\"\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId'),\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{not_obj_id}}/raw/video",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{not_obj_id}}",
+								"raw",
+								"video"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Capture Preview Thumbnails",
+			"item": [
+				{
+					"name": "Create project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('projectId', pm.response.json()['_id'])\r",
+									"pm.environment.set('initial_project', JSON.stringify(pm.response.json()))"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video01.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create  success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response.json()\r",
+									"\r",
+									"tests['Status code is 202 ACCEPTED'] = pm.response.code === 202\r",
+									"tests['Processing'] = resp['processing'] === true\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/thumbnails?type=preview&position=10&crop=0,0,640,480",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"thumbnails"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "preview"
+								},
+								{
+									"key": "position",
+									"value": "10"
+								},
+								{
+									"key": "crop",
+									"value": "0,0,640,480"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Conflict while preview thumbnail is creating",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"console.log(pm.response.json())\r",
+									"\r",
+									"tests['Status code is 409 Conflict'] = pm.response.code === 409\r",
+									"// tests['Processing'] = pm.response.json()['processing'][0] === \"Task edit video is still processing\""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/thumbnails?type=preview&position=10&crop=0,0,640,480",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"thumbnails"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "preview"
+								},
+								{
+									"key": "position",
+									"value": "10"
+								},
+								{
+									"key": "crop",
+									"value": "0,0,640,480"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get preivew thumbnail success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const resp = pm.response.json()\r",
+									"console.log(resp)\r",
+									"tests['Status code is 200 OK'] = pm.response.code === 200\r",
+									"\r",
+									"tests['Mimetype is image/png'] = resp['thumbnails']['preview']['mimetype'] === 'image/png'\r",
+									"tests['Position is 10'] = resp['thumbnails']['preview']['position'] === 10\r",
+									"\r",
+									"tests['Width is 640'] = resp['thumbnails']['preview']['width'] === 640\r",
+									"tests['Height is 480'] = resp['thumbnails']['preview']['height'] === 480"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(() => {\r",
+									"\r",
+									"}, 3000)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create fail due to x,y value in crop param",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests['Status code is 400 BAD REQUEST'] = pm.response.code === 400\r",
+									"tests['Y value is not in allowed range'] = pm.response.json()['crop'][0] === \"y is less than minimum allowed crop height\""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/thumbnails?type=preview&position=10&crop=0,1000,640,480",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"thumbnails"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "preview"
+								},
+								{
+									"key": "position",
+									"value": "10"
+								},
+								{
+									"key": "crop",
+									"value": "0,1000,640,480"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create fail due to width, height value in crop param",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests['Status code is 400 BAD REQUEST'] = pm.response.code === 400\r",
+									"tests['Width value is not in video range'] = pm.response.json()['crop'][0] === \"width of crop's frame is outside a video's frame\"\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId'),\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/thumbnails?type=preview&position=10&crop=0,0,1640,480",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"thumbnails"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "preview"
+								},
+								{
+									"key": "position",
+									"value": "10"
+								},
+								{
+									"key": "crop",
+									"value": "0,0,1640,480"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Edit Video Project",
+			"item": [
+				{
+					"name": "Create and duplicate project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('projectId', pm.response.json()['_id'])\r",
+									"let url = pm.environment.get('url') + '/' + pm.environment.get('projectId') + '/duplicate'\r",
+									"const postRequest = {\r",
+									"  url: url,\r",
+									"  method: 'POST'\r",
+									"};\r",
+									"pm.sendRequest(postRequest, (error, response) => {\r",
+									"  if(!error){\r",
+									"      pm.environment.set('dup_projectId', response.json()['_id'])\r",
+									"      pm.environment.set('dup_project', JSON.stringify(response.json()))\r",
+									"  }\r",
+									"});\r",
+									"pm.environment.set('initial_project', JSON.stringify(pm.response.json()))"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video01.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Succeed in starting edit video's scale",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response.json()\r",
+									"tests['Status code is 202 ACCEPTED'] = pm.response.code === 202\r",
+									"tests['Processing'] = resp['processing'] === true"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"scale\": 800\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/{{dup_projectId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{dup_projectId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Video's scale after editing is match",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response.json()\r",
+									"console.log(resp)\r",
+									"let metaObject = resp['metadata']\r",
+									"\r",
+									"tests['Width is 800'] = metaObject['width'] === 800"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(() => {\r",
+									"\r",
+									"}, 50000)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{dup_projectId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{dup_projectId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Scale value is too great",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response.json()\r",
+									"\r",
+									"tests['Status code is 400 BAD REQUEST'] = pm.response.code === 400\r",
+									"tests['Scale value is too big'] = resp['scale'] !== \"\""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"scale\": 5000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/{{dup_projectId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{dup_projectId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Scale value equal 0",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response.json()\r",
+									"\r",
+									"tests['Status code is 400 BAD REQUEST'] = pm.response.code === 400\r",
+									"tests['Scale value equal 0'] = resp['scale'] !== \"\""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"scale\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/{{dup_projectId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{dup_projectId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
