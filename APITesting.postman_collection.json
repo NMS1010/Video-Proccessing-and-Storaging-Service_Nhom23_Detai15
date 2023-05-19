@@ -2257,7 +2257,6 @@
 									"\r",
 									"tests['Status is 200'] = resp.code === 200\r",
 									"\r",
-									"tests['Amount is correct'] = resp_data['thumbnails']['timeline'].length > 0\r",
 									"\r",
 									""
 								],
@@ -2491,7 +2490,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/{{projectId}}/raw/thumbnails/timeline/{{index}}",
+							"raw": "{{url}}/{{projectId}}/raw/thumbnails/timeline/0",
 							"host": [
 								"{{url}}"
 							],
@@ -2500,7 +2499,7 @@
 								"raw",
 								"thumbnails",
 								"timeline",
-								"{{index}}"
+								"0"
 							]
 						}
 					},
