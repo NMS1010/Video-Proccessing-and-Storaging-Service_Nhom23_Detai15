@@ -2269,7 +2269,7 @@
 								"exec": [
 									"setTimeout(() => {\r",
 									"\r",
-									"}, 30000)"
+									"}, 70000)"
 								],
 								"type": "text/javascript"
 							}
@@ -2326,11 +2326,13 @@
 									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId') + '/thumbnails?type=timeline',\r",
 									"    method: \"GET\"\r",
 									"}, function(err, res) {\r",
-									"    console.log(err);\r",
+									"    setTimeout(() => {\r",
+									"\r",
+									"    }, 60000)\r",
 									"});\r",
 									"setTimeout(() => {\r",
 									"\r",
-									"}, 80000)"
+									"}, 60000)"
 								],
 								"type": "text/javascript"
 							}
@@ -2468,7 +2470,7 @@
 								"exec": [
 									"setTimeout(() => {\r",
 									"\r",
-									"}, 50000)"
+									"}, 70000)"
 								],
 								"type": "text/javascript"
 							}
@@ -2599,7 +2601,7 @@
 								"exec": [
 									"setTimeout(() => {\r",
 									"\r",
-									"}, 50000)"
+									"}, 70000)"
 								],
 								"type": "text/javascript"
 							}
