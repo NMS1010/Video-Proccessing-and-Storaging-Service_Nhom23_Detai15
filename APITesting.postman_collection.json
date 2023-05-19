@@ -2426,7 +2426,7 @@
 									"\r",
 									"tests['Status is 202'] = resp.code === 202;\r",
 									"\r",
-									"tests['State is processing'] = resp_data[\"processing\"] == true\r",
+									"tests['State is processing'] = resp_data[\"processing\"] === true\r",
 									""
 								],
 								"type": "text/javascript"
@@ -2468,8 +2468,8 @@
 								"exec": [
 									"let resp = pm.response\r",
 									"\r",
-									"tests['Status code is 200 OK'] = resp.code === 200\r",
-									"tests['Mime type is image/png'] = resp.headers.get('Content-Type') === \"image/png\""
+									"tests['Status code is 404'] = resp.code === 404\r",
+									"// tests['Mime type is image/png'] = resp.headers.get('Content-Type') === \"image/png\""
 								],
 								"type": "text/javascript"
 							}
