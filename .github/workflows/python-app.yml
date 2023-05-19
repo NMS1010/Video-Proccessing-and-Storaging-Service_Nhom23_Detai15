@@ -103,7 +103,7 @@ jobs:
   #       name: Test Report
   #       path: report.html
   test_api:
-    needs: build
+    # needs: build
     name: Test for environment
     runs-on: ubuntu-latest
     steps:
