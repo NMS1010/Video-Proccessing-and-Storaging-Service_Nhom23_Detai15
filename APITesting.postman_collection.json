@@ -3,8 +3,8 @@
 		"_postman_id": "8046e282-9848-4613-92d3-9e0e34fbd625",
 		"name": "API Testing",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "27227701",
-		"_collection_link": "https://cloudy-rocket-253658.postman.co/workspace/Team-Workspace~27f18470-abc7-475f-8e6e-09624a6269f6/collection/16899417-8046e282-9848-4613-92d3-9e0e34fbd625?action=share&creator=27227701&source=collection_link"
+		"_exporter_id": "16899417",
+		"_collection_link": "https://cloudy-rocket-253658.postman.co/workspace/Team-Workspace~27f18470-abc7-475f-8e6e-09624a6269f6/collection/16899417-8046e282-9848-4613-92d3-9e0e34fbd625?action=share&creator=16899417&source=collection_link"
 	},
 	"item": [
 		{
@@ -2256,7 +2256,7 @@
 									"\r",
 									"tests['Status is 200'] = resp.code === 200\r",
 									"\r",
-									"tests['Amount is correct'] = resp_data['thumbnails']['timeline'].length == pm.environment.get('amount')\r",
+									"tests['Amount is correct'] = resp_data['thumbnails']['timeline'].length === pm.environment.get('amount')\r",
 									"\r",
 									""
 								],
@@ -2304,13 +2304,13 @@
 									"\r",
 									"tests['Status is 200'] = resp.code === 200\r",
 									"\r",
-									"tests['Process is success'] = resp_data['processing'] == false\r",
+									"tests['Process is success'] = resp_data['processing'] === false\r",
 									"\r",
-									"tests['Contains filename'] = JSON.stringify(resp_data['thumbnails'][0]).includes(\"filename\")\r",
+									"tests['Contains filename'] = resp_data['thumbnails'][0] && JSON.stringify(resp_data['thumbnails'][0]).includes(\"filename\")\r",
 									"\r",
-									"tests['Contains storage_id'] = JSON.stringify(resp_data['thumbnails'][0]).includes(\"storage_id\")\r",
+									"tests['Contains storage_id'] = resp_data['thumbnails'][0] && JSON.stringify(resp_data['thumbnails'][0]).includes(\"storage_id\")\r",
 									"\r",
-									"tests['Contains url'] = JSON.stringify(resp_data['thumbnails'][0]).includes(\"url\")\r",
+									"tests['Contains url'] = resp_data['thumbnails'][0] && JSON.stringify(resp_data['thumbnails'][0]).includes(\"url\")\r",
 									"\r",
 									"tests['Mime type is image/png'] = resp_data['thumbnails'][0]['mimetype'] === \"image/png\"\r",
 									""
@@ -2330,7 +2330,7 @@
 									"});\r",
 									"setTimeout(() => {\r",
 									"\r",
-									"}, 50000)"
+									"}, 80000)"
 								],
 								"type": "text/javascript"
 							}
@@ -2450,7 +2450,7 @@
 									"\r",
 									"tests['Status is 200'] = resp.code === 200\r",
 									"\r",
-									"tests['Amount is correct'] = resp_data['thumbnails']['timeline'].length == 40\r",
+									"tests['Amount is correct'] = resp_data['thumbnails']['timeline'].length === 40\r",
 									"\r",
 									"pm.sendRequest({\r",
 									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId'),\r",
@@ -2599,7 +2599,7 @@
 								"exec": [
 									"setTimeout(() => {\r",
 									"\r",
-									"}, 5000)"
+									"}, 50000)"
 								],
 								"type": "text/javascript"
 							}
@@ -2811,7 +2811,7 @@
 					"response": []
 				},
 				{
-					"name": "Convert to API fail",
+					"name": "Convert to AVI fail",
 					"event": [
 						{
 							"listen": "test",
@@ -2819,7 +2819,7 @@
 								"exec": [
 									"let resp = pm.response\r",
 									"\r",
-									"tests['Status code is 500'] = resp.code === 404\r",
+									"tests['Status code is 404'] = resp.code === 404\r",
 									""
 								],
 								"type": "text/javascript"
@@ -3081,7 +3081,7 @@
 								"exec": [
 									"let resp = pm.response\r",
 									"\r",
-									"tests['Status code is 500'] = resp.code === 404\r",
+									"tests['Status code is 404'] = resp.code === 404\r",
 									""
 								],
 								"type": "text/javascript"
@@ -3417,7 +3417,7 @@
 								"exec": [
 									"let resp = pm.response;\r",
 									"\r",
-									"tests['Status is 500'] = resp.code === 404"
+									"tests['Status is 404'] = resp.code === 404"
 								],
 								"type": "text/javascript"
 							}
@@ -3668,7 +3668,7 @@
 								"exec": [
 									"let resp = pm.response;\r",
 									"\r",
-									"tests['Status is 500'] = resp.code === 404"
+									"tests['Status is 404'] = resp.code === 404"
 								],
 								"type": "text/javascript"
 							}
@@ -4008,7 +4008,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./test-data/video01.mp4"
+									"src": "./test-data/avatar.png"
 								}
 							]
 						},
@@ -4052,7 +4052,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/F:/Man/3x4.jpg"
+									"src": "./test-data/avatar.png"
 								}
 							]
 						},
@@ -4097,7 +4097,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/F:/Man/3x4.jpg"
+									"src": "./test-data/avatar.png"
 								}
 							]
 						},
@@ -4144,7 +4144,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/F:/Man/3x4.jpg"
+									"src": "./test-data/avatar.png"
 								}
 							]
 						},
