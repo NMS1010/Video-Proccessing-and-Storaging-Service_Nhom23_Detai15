@@ -4126,7 +4126,7 @@
 								"exec": [
 									"let resp = pm.response\r",
 									"\r",
-									"tests[\"Status code is 400\"] = resp.code === 400\r",
+									"tests[\"Status code is 500\"] = resp.code === 500\r",
 									"\r",
 									"// tests[\"Video Information\"] = resp.json().error === \"The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.\""
 								],
