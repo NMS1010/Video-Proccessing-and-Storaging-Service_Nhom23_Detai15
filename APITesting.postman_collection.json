@@ -23,6 +23,9 @@
 							}
 						}
 					],
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -56,7 +59,7 @@
 							"script": {
 								"exec": [
 									"let resp = pm.response\r",
-									"console.log(resp.json())\r",
+									"\r",
 									"tests[\"Status code is 200\"] = resp.code === 200\r",
 									"\r",
 									"tests[\"Contain video URL\"] = typeof resp.json().url === 'string' && resp.json().url !== ''\r",
@@ -67,7 +70,7 @@
 									"\r",
 									"tests[\"Codec name is h264\"] = typeof resp.json()['metadata']['codec_name'] === 'string' && resp.json()['metadata']['codec_name'] === 'h264'\r",
 									"\r",
-									"tests[\"Width x Height is 1280 x 720\"] = typeof resp.json()['metadata']['width'] === 'number' && resp.json()['metadata']['width'] === 1280 && typeof resp.json()['metadata']['height'] === 'number' && resp.json()['metadata']['height'] === 720"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -616,7 +619,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./test-data/video01.mp4"
+									"src": "./test-data/video02.mp4"
 								}
 							]
 						},
@@ -1359,6 +1362,2715 @@
 							],
 							"path": [
 								"{{dup_projectId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Rotate video success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response.json()\r",
+									"tests['Status code is 202 ACCEPTED'] = pm.response.code === 202\r",
+									"tests['Processing'] = resp['processing'] === true"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"rotate\": 90\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/{{dup_projectId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{dup_projectId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trim video success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response.json()\r",
+									"tests['Status code is 202 ACCEPTED'] = pm.response.code === 202\r",
+									"tests['Processing'] = resp['processing'] === true"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(() => {\r",
+									"\r",
+									"}, 50000)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"trim\": \"5.1,10.5\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/{{dup_projectId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{dup_projectId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crop video success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response.json()\r",
+									"tests['Status code is 202 ACCEPTED'] = pm.response.code === 202\r",
+									"tests['Processing'] = resp['processing'] === true"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(() => {\r",
+									"\r",
+									"}, 50000)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"crop\": \"10,10,320,180\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/{{dup_projectId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{dup_projectId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Delete Project",
+			"item": [
+				{
+					"name": "Create Project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('projectId', pm.response.json()['_id'])\r",
+									"pm.environment.set('initial_project', JSON.stringify(pm.response.json()))"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video02.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Project Success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests['Status code is 204'] = pm.response.code === 204"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Project is not found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"let resp_data = resp.json()\r",
+									"\r",
+									"console.log(resp_data)\r",
+									"\r",
+									"tests[\"Status code is 404\"] = resp.code === 404\r",
+									"tests[\"Contain errors\"] = typeof resp_data.error === 'string' && resp_data.error === \"Project with id '\"+ pm.environment.get('projectId') +\"' was not found.\""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "List Project",
+			"item": [
+				{
+					"name": "Create Project 1",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video02.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Project 2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video01.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Project 3",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video03.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Project (1st page)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp_data = pm.response.json();\r",
+									"const ITEMS_PER_PAGE = 25;\r",
+									"const TOTAL = resp_data['_meta']['total'];\r",
+									"const checkResp = {\r",
+									"            'page': 1,\r",
+									"            'max_results': ITEMS_PER_PAGE,\r",
+									"            'total': TOTAL\r",
+									"        }\r",
+									"\r",
+									"tests['Status code is 200'] = pm.response.code === 200\r",
+									"\r",
+									"tests['Meta is correct'] = JSON.stringify(resp_data['_meta']) == JSON.stringify(checkResp)\r",
+									"\r",
+									"tests['Length items equals with max_results'] = resp_data['_items'].length <= ITEMS_PER_PAGE\r",
+									"\r",
+									"tests['Contains _id'] = JSON.stringify(resp_data['_items'][0]).includes(\"_id\")\r",
+									"\r",
+									"tests['Contains filename'] = JSON.stringify(resp_data['_items'][0]).includes(\"filename\")\r",
+									"\r",
+									"tests['Contains storage_id'] = JSON.stringify(resp_data['_items'][0]).includes(\"storage_id\")\r",
+									"\r",
+									"tests['Contains create_time'] = JSON.stringify(resp_data['_items'][0]).includes(\"create_time\")\r",
+									"\r",
+									"tests['Type video/mp4'] = resp_data['_items'][0]['mime_type'] == \"video/mp4\"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/?page=1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Project Page Empty",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp_data = pm.response.json();\r",
+									"const ITEMS_PER_PAGE = 25;\r",
+									"const TOTAL =  resp_data['_meta']['total'];\r",
+									"const checkResp = {\r",
+									"            'page': 1,\r",
+									"            'max_results': ITEMS_PER_PAGE,\r",
+									"            'total': TOTAL\r",
+									"        }\r",
+									"\r",
+									"tests['Status code is 200'] = pm.response.code === 200\r",
+									"\r",
+									"tests['Meta is correct'] = JSON.stringify(resp_data['_meta']) == JSON.stringify(checkResp)\r",
+									"\r",
+									"tests['Length items equals with max_results'] = resp_data['_items'].length <= ITEMS_PER_PAGE\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "page",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Project Page = 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp_data = pm.response.json();\r",
+									"const ITEMS_PER_PAGE = 25;\r",
+									"const TOTAL =  resp_data['_meta']['total'];\r",
+									"const checkResp = {\r",
+									"            'page': 1,\r",
+									"            'max_results': ITEMS_PER_PAGE,\r",
+									"            'total': TOTAL\r",
+									"        }\r",
+									"\r",
+									"tests['Status code is 200'] = pm.response.code === 200\r",
+									"\r",
+									"tests['Meta is correct'] = JSON.stringify(resp_data['_meta']) == JSON.stringify(checkResp)\r",
+									"\r",
+									"tests['Length items equals with max_results'] = resp_data['_items'].length <= ITEMS_PER_PAGE"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/?page=1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Project Page = 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp_data = pm.response.json();\r",
+									"const ITEMS_PER_PAGE = 25;\r",
+									"const TOTAL =  resp_data['_meta']['total'];\r",
+									"const checkResp = {\r",
+									"            'page': 40,\r",
+									"            'max_results': ITEMS_PER_PAGE,\r",
+									"            'total': TOTAL\r",
+									"        }\r",
+									"console.log(resp_data['_items'])\r",
+									"tests['Status code is 200'] = pm.response.code === 200\r",
+									"\r",
+									"tests['Meta is correct'] = JSON.stringify(resp_data['_meta']) == JSON.stringify(checkResp)\r",
+									"\r",
+									"tests['Length items = 0'] = resp_data['_items'].length === 0\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/?page=40",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "40"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Project  Empty",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Capature Timeline Thumbnails",
+			"item": [
+				{
+					"name": "Create Project 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('projectId', pm.response.json()['_id'])\r",
+									"pm.environment.set('initial_project', JSON.stringify(pm.response.json()))"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video02.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create with not type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response;\r",
+									"let resp_data = resp.json();\r",
+									"\r",
+									"tests['Status is 400'] = resp.code === 400\r",
+									"\r",
+									"tests['Not type'] = resp_data['type'][0] == 'required field'"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/thumbnails",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"thumbnails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create with property incorrect",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response;\r",
+									"let resp_data = resp.json();\r",
+									"\r",
+									"tests['Status is 400'] = resp.code === 400\r",
+									"\r",
+									"tests['Not type'] = resp_data['type'][0] == 'no definitions validate'"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/thumbnails?type=timeline&position=2&rotate=90",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"thumbnails"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "timeline"
+								},
+								{
+									"key": "position",
+									"value": "2"
+								},
+								{
+									"key": "rotate",
+									"value": "90"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create timeline thumbnail have amount thumbnail = 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response;\r",
+									"let resp_data = resp.json();\r",
+									"pm.environment.set('amount', 3)\r",
+									"\r",
+									"tests['Status is 202'] = resp.code === 202;\r",
+									"\r",
+									"tests['State is processing'] = resp_data[\"processing\"] == true\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/thumbnails?type=timeline&amount=3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"thumbnails"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "timeline"
+								},
+								{
+									"key": "amount",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Amount is correct (=3)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response;\r",
+									"let resp_data = resp.json()\r",
+									"\r",
+									"tests['Status is 200'] = resp.code === 200\r",
+									"\r",
+									"tests['Amount is correct'] = resp_data['thumbnails']['timeline'].length == pm.environment.get('amount')\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(() => {\r",
+									"\r",
+									"}, 50000)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Timeline thumbnail infor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response;\r",
+									"let resp_data = resp.json();\r",
+									"\r",
+									"console.log(resp_data)\r",
+									"\r",
+									"tests['Status is 200'] = resp.code === 200\r",
+									"\r",
+									"tests['Process is success'] = resp_data['processing'] == false\r",
+									"\r",
+									"tests['Contains filename'] = JSON.stringify(resp_data['thumbnails'][0]).includes(\"filename\")\r",
+									"\r",
+									"tests['Contains storage_id'] = JSON.stringify(resp_data['thumbnails'][0]).includes(\"storage_id\")\r",
+									"\r",
+									"tests['Contains url'] = JSON.stringify(resp_data['thumbnails'][0]).includes(\"url\")\r",
+									"\r",
+									"tests['Mime type is image/png'] = resp_data['thumbnails'][0]['mimetype'] === \"image/png\"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId') + '/thumbnails?type=timeline',\r",
+									"    method: \"GET\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});\r",
+									"setTimeout(() => {\r",
+									"\r",
+									"}, 50000)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/thumbnails?type=timeline",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"thumbnails"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "timeline"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Project 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('projectId', pm.response.json()['_id'])\r",
+									"pm.environment.set('initial_project', JSON.stringify(pm.response.json()))"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video01.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create timeline thumbnail without amount",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response;\r",
+									"let resp_data = resp.json();\r",
+									"\r",
+									"tests['Status is 202'] = resp.code === 202;\r",
+									"\r",
+									"tests['State is processing'] = resp_data[\"processing\"] == true\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/thumbnails?type=timeline",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"thumbnails"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "timeline"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Amount is 40",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response;\r",
+									"let resp_data = resp.json()\r",
+									"\r",
+									"tests['Status is 200'] = resp.code === 200\r",
+									"\r",
+									"tests['Amount is correct'] = resp_data['thumbnails']['timeline'].length == 40\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(() => {\r",
+									"\r",
+									"}, 50000)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get timeline thumbnail file",
+			"item": [
+				{
+					"name": "Create Project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('projectId', pm.response.json()['_id'])\r",
+									"pm.environment.set('initial_project', JSON.stringify(pm.response.json()))"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video02.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create thumbnails for timeline success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"let resp_data = resp.json()\r",
+									"\r",
+									"tests['Status is 202'] = resp.code === 202;\r",
+									"\r",
+									"tests['State is processing'] = resp_data[\"processing\"] == true\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/thumbnails?type=timeline&amount=2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"thumbnails"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "timeline"
+								},
+								{
+									"key": "amount",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get timeline thumbnail file success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests['Status code is 200 OK'] = resp.code === 200\r",
+									"tests['Mime type is image/png'] = resp.contentInfo()['contentType'] === \"image/png\""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(() => {\r",
+									"\r",
+									"}, 50000)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/raw/thumbnails/timeline/{{index}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"raw",
+								"thumbnails",
+								"timeline",
+								"{{index}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Project is not found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests[\"Status code is 404\"] = resp.code === 404"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{wrong_id}}/raw/thumbnails/timeline/{{index}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{wrong_id}}",
+								"raw",
+								"thumbnails",
+								"timeline",
+								"{{index}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Index is not found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests[\"Status code is 404\"] = resp.code === 404\r",
+									"\r",
+									"tests['Response erree'] = resp.json()['error'] == \"The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.\""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/raw/thumbnails/timeline/{{index_incorrect}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"raw",
+								"thumbnails",
+								"timeline",
+								"{{index_incorrect}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Project is not found check message",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp_data = pm.response.json();\r",
+									"\r",
+									"tests[\"Contain errors\"] = typeof resp_data.error === 'string' && resp_data.error === \"Project with id '\"+ pm.environment.get('wrong_id') +\"' was not found.\""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{wrong_id}}/raw/thumbnails/timeline/{{index}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{wrong_id}}",
+								"raw",
+								"thumbnails",
+								"timeline",
+								"{{index}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Convert video to AVI format",
+			"item": [
+				{
+					"name": "Create Project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('projectId', pm.response.json()['_id'])"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video01.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Convert to AVI success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests['Status code is 200'] = resp.code === 200\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/conver_mp4_to_avi",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"conver_mp4_to_avi"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Convert to API fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests['Status code is 500'] = resp.code === 500\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{wrong_id}}/conver_mp4_to_avi",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{wrong_id}}",
+								"conver_mp4_to_avi"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Content type is video/x-msvideo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"tests['Content type is video/x-msvideo'] = resp.headers.get('Content-Type') === 'video/x-msvideo'\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/conver_mp4_to_avi",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"conver_mp4_to_avi"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Video format correctly",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests['Format is AVI'] = resp.headers.get('Content-Disposition').includes('.avi')\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/conver_mp4_to_avi",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"conver_mp4_to_avi"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Video is editting before convert",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let url = pm.environment.get('url') + '/' + pm.environment.get('projectId') + '/duplicate'\r",
+									"const postRequest = {\r",
+									"  url: url,\r",
+									"  method: 'POST'\r",
+									"};\r",
+									"pm.sendRequest(postRequest, (error, response) => {\r",
+									"    if(!error){\r",
+									"        let dupId = response.json()['_id']\r",
+									"        url = pm.environment.get('url') + '/' + dupId\r",
+									"        const formData = {\r",
+									"            \"crop\": \"10,10,480,360\",\r",
+									"            \"rotate\": 90,\r",
+									"            \"scale\": 800,\r",
+									"            \"trim\": \"5.1,10.5\"\r",
+									"        };\r",
+									"        const editVideoReq = {\r",
+									"            url: url,\r",
+									"            method: 'PUT',\r",
+									"            header: {\r",
+									"                'Content-type': 'application/json'\r",
+									"            },\r",
+									"            body: {\r",
+									"                mode: 'raw',\r",
+									"                raw: JSON.stringify(formData)\r",
+									"            }\r",
+									"            };\r",
+									"            pm.sendRequest(editVideoReq, (error, response) => {\r",
+									"            if(!error){\r",
+									"                pm.environment.set('edit_projectId', dupId)\r",
+									"            }\r",
+									"        });\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests['Conflict'] = pm.response.code === 409\r",
+									"tests['Processing'] = pm.response.json()['processing'][0] === \"Some tasks are still processing\"\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.response.json()['_id'],\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.response.json()['edit_projectId'],\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId'),\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{edit_projectId}}/conver_mp4_to_avi",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{edit_projectId}}",
+								"conver_mp4_to_avi"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Change speed of a video",
+			"item": [
+				{
+					"name": "Create Project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('projectId', pm.response.json()['_id'])"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video01.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change speed video success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests['Status code is 200'] = resp.code === 200\r",
+									"tests['Filename contain \"speed\" keyword'] = resp.headers.get('Content-disposition').includes('speed')"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/change_speed_video?speed=2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"change_speed_video"
+							],
+							"query": [
+								{
+									"key": "speed",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change speed video fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests['Status code is 500'] = resp.code === 500\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{wrong_id}}/change_speed_video?speed=2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{wrong_id}}",
+								"change_speed_video"
+							],
+							"query": [
+								{
+									"key": "speed",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Content type is video/mp4",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"tests['Content type is video/x-msvideo'] = resp.headers.get('Content-Type') === 'video/mp4'\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/change_speed_video?speed=2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"change_speed_video"
+							],
+							"query": [
+								{
+									"key": "speed",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Missing 'speed' parameter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"tests['Missing \"speed\" param'] = resp.json()['error'] === \"Missing required query parameter \\\"speed\\\"\"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/change_speed_video",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"change_speed_video"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Video is editting before change speed",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let url = pm.environment.get('url') + '/' + pm.environment.get('projectId') + '/duplicate'\r",
+									"const postRequest = {\r",
+									"  url: url,\r",
+									"  method: 'POST'\r",
+									"};\r",
+									"pm.sendRequest(postRequest, (error, response) => {\r",
+									"    if(!error){\r",
+									"        let dupId = response.json()['_id']\r",
+									"        url = pm.environment.get('url') + '/' + dupId\r",
+									"        const formData = {\r",
+									"            \"crop\": \"10,10,480,360\",\r",
+									"            \"rotate\": 90,\r",
+									"            \"scale\": 800,\r",
+									"            \"trim\": \"5.1,10.5\"\r",
+									"        };\r",
+									"        const editVideoReq = {\r",
+									"            url: url,\r",
+									"            method: 'PUT',\r",
+									"            header: {\r",
+									"                'Content-type': 'application/json'\r",
+									"            },\r",
+									"            body: {\r",
+									"                mode: 'raw',\r",
+									"                raw: JSON.stringify(formData)\r",
+									"            }\r",
+									"            };\r",
+									"            pm.sendRequest(editVideoReq, (error, response) => {\r",
+									"            if(!error){\r",
+									"                pm.environment.set('edit_projectId', dupId)\r",
+									"            }\r",
+									"        });\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests['Conflict'] = pm.response.code === 409\r",
+									"tests['Processing'] = pm.response.json()['processing'][0] === \"Some tasks are still processing\"\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.response.json()['_id'],\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.response.json()['edit_projectId'],\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId'),\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{edit_projectId}}/change_speed_video?speed=2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{edit_projectId}}",
+								"change_speed_video"
+							],
+							"query": [
+								{
+									"key": "speed",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Extract audio from a video",
+			"item": [
+				{
+					"name": "Create Project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('projectId', pm.response.json()['_id'])"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video03.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Extract audio success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests['Status is 200'] = resp.code === 200\r",
+									"tests['Status is Ok'] = resp.status === \"OK\""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/extract_audio",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"extract_audio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check type is mp3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests['Content type is mp3'] = resp.headers.get('Content-Type') == \"audio/mp3\""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/extract_audio",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"extract_audio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Contain audio after extract",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response;\r",
+									"\r",
+									"tests['Attachment audio'] = JSON.stringify(resp.headers.get('Content-Disposition')).includes(\"attachment; filename\")"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{projectId}}/extract_audio",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"extract_audio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Extract audio fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response;\r",
+									"\r",
+									"tests['Status is 500'] = resp.code === 500"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{wrong_id}}/extract_audio",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{wrong_id}}",
+								"extract_audio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check message when extract fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response.json();\r",
+									"\r",
+									"tests['Contain message error'] = resp['error'] !== ''"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{wrong_id}}/extract_audio",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{wrong_id}}",
+								"extract_audio"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Merge two videos together",
+			"item": [
+				{
+					"name": "Create Project 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('project_id_1', pm.response.json()['_id'])\r",
+									"pm.environment.set('initial_project', JSON.stringify(pm.response.json()))"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video02.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Project  2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('project_id_2', pm.response.json()['_id'])\r",
+									"pm.environment.set('initial_project', JSON.stringify(pm.response.json()))"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video03.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Merge two video success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response;\r",
+									"\r",
+									"tests['Status is 200'] = resp.code === 200\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{project_id_1}}/{{project_id_2}}/merge_videos",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{project_id_1}}",
+								"{{project_id_2}}",
+								"merge_videos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Contain video after merge",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response;\r",
+									"\r",
+									"tests['Attachment video'] = resp.headers.get('Content-Disposition') == \"attachment; filename=merged.mp4\"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{project_id_1}}/{{project_id_2}}/merge_videos",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{project_id_1}}",
+								"{{project_id_2}}",
+								"merge_videos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Content type is mp4",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response;\r",
+									"\r",
+									"console.log()\r",
+									"tests['Content type is mp4'] = resp.headers.get('Content-Type') == \"video/mp4\""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{project_id_1}}/{{project_id_2}}/merge_videos",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{project_id_1}}",
+								"{{project_id_2}}",
+								"merge_videos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Merge two video fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response;\r",
+									"\r",
+									"tests['Status is 500'] = resp.code === 500"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{wrong_id}}/{{project_id_2}}/merge_videos",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{wrong_id}}",
+								"{{project_id_2}}",
+								"merge_videos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check message when merge fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response.json();\r",
+									"\r",
+									"tests['Contain message error'] = resp['error'] !== ''"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/{{wrong_id}}/{{project_id_2}}/merge_videos",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{wrong_id}}",
+								"{{project_id_2}}",
+								"merge_videos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create Project",
+			"item": [
+				{
+					"name": "Creat Project success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests[\"Status code is 201\"] = resp.code === 201\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video01.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Creat Project contain metadata",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests[\"Status code is 201\"] = resp.code === 201\r",
+									"\r",
+									"tests[\"Contain metadata\"] = resp.json().metadata !== ''"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video02.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Creat Project contain processing",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests[\"Status code is 201\"] = resp.code === 201\r",
+									"\r",
+									"tests[\"Contain processing\"] = resp.json().processing !== ''"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video03.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Creat Project contain storage_id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests[\"Status code is 201\"] = resp.code === 201\r",
+									"\r",
+									"tests[\"Contain storage_id\"] = resp.json().storage_id !== ''"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video01.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Creat Project fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests[\"Status code is 400\"] = resp.code === 400\r",
+									"\r",
+									"tests[\"Contain file\"] = resp.json().file !== \"required field\""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Upload custom preview thumbnail",
+			"item": [
+				{
+					"name": "Upload Project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('projectId', pm.response.json()['_id'])"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/video01.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests[\"Status code is 200\"] = resp.code === 200\r",
+									"\r",
+									"tests[\"Video Information\"] = resp.json().url !== ''"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/avatar.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/{{projectId}}/thumbnails",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"thumbnails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Success next",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests[\"Status code is 200\"] = resp.code === 200\r",
+									"\r",
+									"tests[\"Contain filename\"] = resp.json().filename !== \"\"\r",
+									"\r",
+									"tests[\"Contain storage_id\"] = resp.json().storage_id !== \"\""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/avatar.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/{{projectId}}/thumbnails",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"thumbnails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Success contain information",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests[\"Status code is 200\"] = resp.code === 200\r",
+									"\r",
+									"tests[\"Contain url\"] = resp.json().url !== \"\"\r",
+									"\r",
+									"tests[\"Contain width\"] = resp.json().width !== \"\"\r",
+									"\r",
+									"tests[\"Contain height\"] = resp.json().height !== \"\""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "./test-data/avatar.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/{{projectId}}/thumbnails",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"thumbnails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "No file include",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests[\"Status code is 400\"] = resp.code === 400\r",
+									"\r",
+									"// tests[\"Video Information\"] = resp.json().error === \"The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.\""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/{{projectId}}/thumbnails",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"thumbnails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "No file parameter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let resp = pm.response\r",
+									"\r",
+									"tests[\"Status code is 400\"] = resp.code === 400\r",
+									"\r",
+									"tests[\"Video Information\"] = resp.json().file[0] === \"required field\""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/{{projectId}}/thumbnails",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"{{projectId}}",
+								"thumbnails"
 							]
 						}
 					},
