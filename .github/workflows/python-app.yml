@@ -102,9 +102,46 @@ jobs:
       with:
         name: Test Report
         path: report.html
+  test_api:
+    needs: build
+    name: Test for environment
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      - name: Run app
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          sudo docker-compose up -d --build
+      - name: Install newman
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
+
+      - name: Make Directory for results
+        run: mkdir -p testResults
+
+      - name: Run POSTMAN collection
+        run: |
+          newman run APITesting.postman_collection.json --environment=API.postman_environment.json -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html --reporter-htmlextra-darkTheme
+
+      - name: Output the run Details
+        uses: actions/upload-artifact@v2
+        with:
+          name: RunReports
+          path: testResults
   scan:
     name: Sonarqube - Code Quality Scan
-    needs: build
+    needs: test_api
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -148,33 +185,5 @@ jobs:
           
           sudo docker-compose down
           sudo docker-compose up -d --build
-  staging_test:
-    needs: deploy
-    name: Test for staging environment
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
 
-      - name: Install Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: "12.x"
-
-      - name: Install newman
-        run: |
-          npm install -g newman
-          npm install -g newman-reporter-htmlextra
-
-      - name: Make Directory for results
-        run: mkdir -p testResults
-
-      - name: Run POSTMAN collection
-        run: |
-          newman run APITesting.postman_collection.json --environment=API.postman_environment.json -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html --reporter-htmlextra-darkTheme
-
-      - name: Output the run Details
-        uses: actions/upload-artifact@v2
-        with:
-          name: RunReports
-          path: testResults
 
