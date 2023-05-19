@@ -619,7 +619,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./test-data/video02.mp4"
+									"src": "./test-data/video01.mp4"
 								}
 							]
 						},
@@ -1465,7 +1465,20 @@
 								"exec": [
 									"let resp = pm.response.json()\r",
 									"tests['Status code is 202 ACCEPTED'] = pm.response.code === 202\r",
-									"tests['Processing'] = resp['processing'] === true"
+									"tests['Processing'] = resp['processing'] === true\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.response.json()['dup_projectId'],\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId'),\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -1534,7 +1547,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./test-data/video02.mp4"
+									"src": "./test-data/video01.mp4"
 								}
 							]
 						},
@@ -1619,6 +1632,17 @@
 			"item": [
 				{
 					"name": "Create Project 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('projectId1', pm.response.json()['_id'])"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -1628,7 +1652,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./test-data/video02.mp4"
+									"src": "./test-data/video01.mp4"
 								}
 							]
 						},
@@ -1646,6 +1670,17 @@
 				},
 				{
 					"name": "Create Project 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('projectId2', pm.response.json()['_id'])"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -1673,6 +1708,17 @@
 				},
 				{
 					"name": "Create Project 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('projectId3', pm.response.json()['_id'])"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -1682,7 +1728,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./test-data/video03.mp4"
+									"src": "./test-data/video01.mp4"
 								}
 							]
 						},
@@ -1934,6 +1980,35 @@
 				},
 				{
 					"name": "Get List Project  Empty",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId1'),\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId2'),\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId3'),\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -1977,7 +2052,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./test-data/video02.mp4"
+									"src": "./test-data/video01.mp4"
 								}
 							]
 						},
@@ -2332,7 +2407,13 @@
 									"tests['Status is 200'] = resp.code === 200\r",
 									"\r",
 									"tests['Amount is correct'] = resp_data['thumbnails']['timeline'].length == 40\r",
-									""
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId'),\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -2392,7 +2473,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./test-data/video02.mp4"
+									"src": "./test-data/video01.mp4"
 								}
 							]
 						},
@@ -2578,7 +2659,14 @@
 								"exec": [
 									"let resp_data = pm.response.json();\r",
 									"\r",
-									"tests[\"Contain errors\"] = typeof resp_data.error === 'string' && resp_data.error === \"Project with id '\"+ pm.environment.get('wrong_id') +\"' was not found.\""
+									"tests[\"Contain errors\"] = typeof resp_data.error === 'string' && resp_data.error === \"Project with id '\"+ pm.environment.get('wrong_id') +\"' was not found.\"\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId'),\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -2826,12 +2914,6 @@
 									"tests['Conflict'] = pm.response.code === 409\r",
 									"tests['Processing'] = pm.response.json()['processing'][0] === \"Some tasks are still processing\"\r",
 									"\r",
-									"pm.sendRequest({\r",
-									"    url: pm.environment.get('url') + '/' + pm.response.json()['_id'],\r",
-									"    method: \"DELETE\"\r",
-									"}, function(err, res) {\r",
-									"    console.log(err);\r",
-									"});\r",
 									"pm.sendRequest({\r",
 									"    url: pm.environment.get('url') + '/' + pm.response.json()['edit_projectId'],\r",
 									"    method: \"DELETE\"\r",
@@ -3107,12 +3189,6 @@
 									"tests['Processing'] = pm.response.json()['processing'][0] === \"Some tasks are still processing\"\r",
 									"\r",
 									"pm.sendRequest({\r",
-									"    url: pm.environment.get('url') + '/' + pm.response.json()['_id'],\r",
-									"    method: \"DELETE\"\r",
-									"}, function(err, res) {\r",
-									"    console.log(err);\r",
-									"});\r",
-									"pm.sendRequest({\r",
 									"    url: pm.environment.get('url') + '/' + pm.response.json()['edit_projectId'],\r",
 									"    method: \"DELETE\"\r",
 									"}, function(err, res) {\r",
@@ -3178,7 +3254,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./test-data/video03.mp4"
+									"src": "./test-data/video01.mp4"
 								}
 							]
 						},
@@ -3328,7 +3404,14 @@
 								"exec": [
 									"let resp = pm.response.json();\r",
 									"\r",
-									"tests['Contain message error'] = resp['error'] !== ''"
+									"tests['Contain message error'] = resp['error'] !== ''\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId'),\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -3378,7 +3461,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./test-data/video02.mp4"
+									"src": "./test-data/video01.mp4"
 								}
 							]
 						},
@@ -3417,7 +3500,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./test-data/video03.mp4"
+									"src": "./test-data/video01.mp4"
 								}
 							]
 						},
@@ -3573,7 +3656,21 @@
 								"exec": [
 									"let resp = pm.response.json();\r",
 									"\r",
-									"tests['Contain message error'] = resp['error'] !== ''"
+									"tests['Contain message error'] = resp['error'] !== ''\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId1'),\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId2'),\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -3611,6 +3708,13 @@
 									"let resp = pm.response\r",
 									"\r",
 									"tests[\"Status code is 201\"] = resp.code === 201\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.response.json()['_id'],\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});\r",
 									""
 								],
 								"type": "text/javascript"
@@ -3653,7 +3757,14 @@
 									"\r",
 									"tests[\"Status code is 201\"] = resp.code === 201\r",
 									"\r",
-									"tests[\"Contain metadata\"] = resp.json().metadata !== ''"
+									"tests[\"Contain metadata\"] = resp.json().metadata !== ''\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.response.json()['_id'],\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -3668,7 +3779,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./test-data/video02.mp4"
+									"src": "./test-data/video01.mp4"
 								}
 							]
 						},
@@ -3695,7 +3806,14 @@
 									"\r",
 									"tests[\"Status code is 201\"] = resp.code === 201\r",
 									"\r",
-									"tests[\"Contain processing\"] = resp.json().processing !== ''"
+									"tests[\"Contain processing\"] = resp.json().processing !== ''\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.response.json()['_id'],\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -3710,7 +3828,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./test-data/video03.mp4"
+									"src": "./test-data/video01.mp4"
 								}
 							]
 						},
@@ -3737,7 +3855,14 @@
 									"\r",
 									"tests[\"Status code is 201\"] = resp.code === 201\r",
 									"\r",
-									"tests[\"Contain storage_id\"] = resp.json().storage_id !== ''"
+									"tests[\"Contain storage_id\"] = resp.json().storage_id !== ''\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.response.json()['_id'],\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -3779,7 +3904,8 @@
 									"\r",
 									"tests[\"Status code is 400\"] = resp.code === 400\r",
 									"\r",
-									"tests[\"Contain file\"] = resp.json().file !== \"required field\""
+									"tests[\"Contain file\"] = resp.json().file !== \"required field\"\r",
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -3865,7 +3991,9 @@
 									"\r",
 									"tests[\"Status code is 200\"] = resp.code === 200\r",
 									"\r",
-									"tests[\"Video Information\"] = resp.json().url !== ''"
+									"tests[\"Video Information\"] = resp.json().url !== ''\r",
+									"\r",
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -4043,7 +4171,14 @@
 									"\r",
 									"tests[\"Status code is 400\"] = resp.code === 400\r",
 									"\r",
-									"tests[\"Video Information\"] = resp.json().file[0] === \"required field\""
+									"tests[\"Video Information\"] = resp.json().file[0] === \"required field\"\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId'),\r",
+									"    method: \"DELETE\"\r",
+									"}, function(err, res) {\r",
+									"    console.log(err);\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
