@@ -2179,7 +2179,7 @@
                   "method": "GET",
                   "header": [],
                   "url": {
-                     "raw": "{{url}}/{{projectId}}/thumbnails?type=timeline&amount=2",
+                     "raw": "{{url}}/{{projectId}}/thumbnails?type=timeline&amount=3",
                      "host": ["{{url}}"],
                      "path": ["{{projectId}}", "thumbnails"],
                      "query": [
@@ -2189,7 +2189,7 @@
                         },
                         {
                            "key": "amount",
-                           "value": "2"
+                           "value": "3"
                         }
                      ]
                   }
@@ -2205,7 +2205,7 @@
                         "exec": [
                            "let resp = pm.response\r",
                            "\r",
-                           "tests['Status code is 404'] = resp.code === 404\r",
+                           "tests['Status code is 200'] = resp.code === 200\r",
                            "// tests['Mime type is image/png'] = resp.headers.get('Content-Type') === \"image/png\""
                         ],
                         "type": "text/javascript"
