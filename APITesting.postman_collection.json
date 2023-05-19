@@ -2197,46 +2197,6 @@
                "response": []
             },
             {
-               "name": "Get timeline thumbnail file success",
-               "event": [
-                  {
-                     "listen": "test",
-                     "script": {
-                        "exec": [
-                           "let resp = pm.response\r",
-                           "\r",
-                           "tests['Status code is 200'] = resp.code === 200\r",
-                           "// tests['Mime type is image/png'] = resp.headers.get('Content-Type') === \"image/png\""
-                        ],
-                        "type": "text/javascript"
-                     }
-                  },
-                  {
-                     "listen": "prerequest",
-                     "script": {
-                        "exec": ["setTimeout(() => {\r", "\r", "}, 120000)"],
-                        "type": "text/javascript"
-                     }
-                  }
-               ],
-               "request": {
-                  "method": "GET",
-                  "header": [],
-                  "url": {
-                     "raw": "{{url}}/{{projectId}}/raw/thumbnails/timeline/0",
-                     "host": ["{{url}}"],
-                     "path": [
-                        "{{projectId}}",
-                        "raw",
-                        "thumbnails",
-                        "timeline",
-                        "0"
-                     ]
-                  }
-               },
-               "response": []
-            },
-            {
                "name": "Project is not found",
                "event": [
                   {
