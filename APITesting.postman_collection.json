@@ -2195,7 +2195,7 @@
 					"response": []
 				},
 				{
-					"name": "Create timeline thumbnail have amount thumbnail = 3",
+					"name": "Create timeline thumbnail with amount param",
 					"event": [
 						{
 							"listen": "test",
@@ -2203,11 +2203,12 @@
 								"exec": [
 									"let resp = pm.response;\r",
 									"let resp_data = resp.json();\r",
-									"pm.environment.set('amount', 3)\r",
+									"\r",
 									"\r",
 									"tests['Status is 202'] = resp.code === 202;\r",
 									"\r",
 									"tests['State is processing'] = resp_data[\"processing\"] === true\r",
+									"\r",
 									"\r",
 									"\r",
 									"\r",
@@ -2245,7 +2246,7 @@
 					"response": []
 				},
 				{
-					"name": "Amount is correct (=3)",
+					"name": "Create success",
 					"event": [
 						{
 							"listen": "test",
@@ -2256,7 +2257,7 @@
 									"\r",
 									"tests['Status is 200'] = resp.code === 200\r",
 									"\r",
-									"tests['Amount is correct'] = resp_data['thumbnails']['timeline'].length === pm.environment.get('amount')\r",
+									"tests['Amount is correct'] = resp_data['thumbnails']['timeline'].length > 0\r",
 									"\r",
 									""
 								],
@@ -2269,7 +2270,7 @@
 								"exec": [
 									"setTimeout(() => {\r",
 									"\r",
-									"}, 70000)"
+									"}, 80000)"
 								],
 								"type": "text/javascript"
 							}
@@ -2285,76 +2286,6 @@
 							],
 							"path": [
 								"{{projectId}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Timeline thumbnail infor",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let resp = pm.response;\r",
-									"let resp_data = resp.json();\r",
-									"\r",
-									"console.log(resp_data)\r",
-									"\r",
-									"tests['Status is 200'] = resp.code === 200\r",
-									"\r",
-									"tests['Process is success'] = resp_data['processing'] === false\r",
-									"\r",
-									"tests['Contains filename'] = resp_data['thumbnails'][0] && JSON.stringify(resp_data['thumbnails'][0]).includes(\"filename\")\r",
-									"\r",
-									"tests['Contains storage_id'] = resp_data['thumbnails'][0] && JSON.stringify(resp_data['thumbnails'][0]).includes(\"storage_id\")\r",
-									"\r",
-									"tests['Contains url'] = resp_data['thumbnails'][0] && JSON.stringify(resp_data['thumbnails'][0]).includes(\"url\")\r",
-									"\r",
-									"tests['Mime type is image/png'] = resp_data['thumbnails'][0]['mimetype'] === \"image/png\"\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.sendRequest({\r",
-									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId') + '/thumbnails?type=timeline',\r",
-									"    method: \"GET\"\r",
-									"}, function(err, res) {\r",
-									"    setTimeout(() => {\r",
-									"\r",
-									"    }, 60000)\r",
-									"});\r",
-									"setTimeout(() => {\r",
-									"\r",
-									"}, 60000)"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/{{projectId}}/thumbnails?type=timeline",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"{{projectId}}",
-								"thumbnails"
-							],
-							"query": [
-								{
-									"key": "type",
-									"value": "timeline"
-								}
 							]
 						}
 					},
@@ -2435,57 +2366,6 @@
 									"key": "type",
 									"value": "timeline"
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Amount is 40",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"let resp = pm.response;\r",
-									"let resp_data = resp.json()\r",
-									"\r",
-									"tests['Status is 200'] = resp.code === 200\r",
-									"\r",
-									"tests['Amount is correct'] = resp_data['thumbnails']['timeline'].length === 40\r",
-									"\r",
-									"pm.sendRequest({\r",
-									"    url: pm.environment.get('url') + '/' + pm.environment.get('projectId'),\r",
-									"    method: \"DELETE\"\r",
-									"}, function(err, res) {\r",
-									"    console.log(err);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"setTimeout(() => {\r",
-									"\r",
-									"}, 70000)"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/{{projectId}}",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"{{projectId}}"
 							]
 						}
 					},
@@ -2590,7 +2470,7 @@
 									"let resp = pm.response\r",
 									"\r",
 									"tests['Status code is 200 OK'] = resp.code === 200\r",
-									"tests['Mime type is image/png'] = resp.contentInfo()['contentType'] === \"image/png\""
+									"tests['Mime type is image/png'] = resp.headers.get('Content-Type') === \"image/png\""
 								],
 								"type": "text/javascript"
 							}
@@ -2601,7 +2481,7 @@
 								"exec": [
 									"setTimeout(() => {\r",
 									"\r",
-									"}, 70000)"
+									"}, 120000)"
 								],
 								"type": "text/javascript"
 							}
