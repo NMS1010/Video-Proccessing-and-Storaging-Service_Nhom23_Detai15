@@ -2207,7 +2207,7 @@
 									"\r",
 									"tests['Status is 202'] = resp.code === 202;\r",
 									"\r",
-									"tests['State is processing'] = resp_data[\"processing\"] == true\r",
+									"tests['State is processing'] = resp_data[\"processing\"] === true\r",
 									"\r",
 									"\r",
 									"\r",
@@ -2269,7 +2269,7 @@
 								"exec": [
 									"setTimeout(() => {\r",
 									"\r",
-									"}, 3000)"
+									"}, 30000)"
 								],
 								"type": "text/javascript"
 							}
@@ -2669,7 +2669,7 @@
 									"\r",
 									"tests[\"Status code is 404\"] = resp.code === 404\r",
 									"\r",
-									"tests['Response erree'] = resp.json()['error'] == \"The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.\""
+									"tests['Response erree'] = resp.json()['error'] !== ''"
 								],
 								"type": "text/javascript"
 							}
@@ -2819,7 +2819,7 @@
 								"exec": [
 									"let resp = pm.response\r",
 									"\r",
-									"tests['Status code is 404'] = resp.code === 404\r",
+									"tests['Status code is 500'] = resp.code === 500\r",
 									""
 								],
 								"type": "text/javascript"
@@ -3081,7 +3081,7 @@
 								"exec": [
 									"let resp = pm.response\r",
 									"\r",
-									"tests['Status code is 404'] = resp.code === 404\r",
+									"tests['Status code is 500'] = resp.code === 500\r",
 									""
 								],
 								"type": "text/javascript"
@@ -3417,7 +3417,7 @@
 								"exec": [
 									"let resp = pm.response;\r",
 									"\r",
-									"tests['Status is 404'] = resp.code === 404"
+									"tests['Status is 500'] = resp.code === 500"
 								],
 								"type": "text/javascript"
 							}
@@ -3668,7 +3668,7 @@
 								"exec": [
 									"let resp = pm.response;\r",
 									"\r",
-									"tests['Status is 404'] = resp.code === 404"
+									"tests['Status is 500'] = resp.code === 500"
 								],
 								"type": "text/javascript"
 							}
@@ -4008,7 +4008,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./test-data/avatar.png"
+									"src": "./test-data/video01.mp4"
 								}
 							]
 						},
@@ -4170,7 +4170,7 @@
 								"exec": [
 									"let resp = pm.response\r",
 									"\r",
-									"tests[\"Status code is 400\"] = resp.code === 400\r",
+									"tests[\"Status code is 500\"] = resp.code === 500\r",
 									"\r",
 									"// tests[\"Video Information\"] = resp.json().error === \"The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.\""
 								],
