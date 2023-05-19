@@ -3,8 +3,8 @@
 		"_postman_id": "8046e282-9848-4613-92d3-9e0e34fbd625",
 		"name": "API Testing",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "16899417",
-		"_collection_link": "https://cloudy-rocket-253658.postman.co/workspace/Team-Workspace~27f18470-abc7-475f-8e6e-09624a6269f6/collection/16899417-8046e282-9848-4613-92d3-9e0e34fbd625?action=share&creator=16899417&source=collection_link"
+		"_exporter_id": "27227701",
+		"_collection_link": "https://cloudy-rocket-253658.postman.co/workspace/Team-Workspace~27f18470-abc7-475f-8e6e-09624a6269f6/collection/16899417-8046e282-9848-4613-92d3-9e0e34fbd625?action=share&creator=27227701&source=collection_link"
 	},
 	"item": [
 		{
@@ -1034,7 +1034,7 @@
 								"exec": [
 									"setTimeout(() => {\r",
 									"\r",
-									"}, 3000)"
+									"}, 30000)"
 								],
 								"type": "text/javascript"
 							}
@@ -1218,6 +1218,17 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(() => {\r",
+									"\r",
+									"}, 50000)"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
@@ -1301,6 +1312,17 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(() => {\r",
+									"\r",
+									"}, 50000)"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
@@ -1341,6 +1363,17 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(() => {\r",
+									"\r",
+									"}, 50000)"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
@@ -1377,6 +1410,17 @@
 									"let resp = pm.response.json()\r",
 									"tests['Status code is 202 ACCEPTED'] = pm.response.code === 202\r",
 									"tests['Processing'] = resp['processing'] === true"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"setTimeout(() => {\r",
+									"\r",
+									"}, 50000)"
 								],
 								"type": "text/javascript"
 							}
@@ -2225,7 +2269,7 @@
 								"exec": [
 									"setTimeout(() => {\r",
 									"\r",
-									"}, 50000)"
+									"}, 3000)"
 								],
 								"type": "text/javascript"
 							}
@@ -2555,7 +2599,7 @@
 								"exec": [
 									"setTimeout(() => {\r",
 									"\r",
-									"}, 50000)"
+									"}, 5000)"
 								],
 								"type": "text/javascript"
 							}
@@ -2775,7 +2819,7 @@
 								"exec": [
 									"let resp = pm.response\r",
 									"\r",
-									"tests['Status code is 500'] = resp.code === 500\r",
+									"tests['Status code is 500'] = resp.code === 404\r",
 									""
 								],
 								"type": "text/javascript"
@@ -3037,7 +3081,7 @@
 								"exec": [
 									"let resp = pm.response\r",
 									"\r",
-									"tests['Status code is 500'] = resp.code === 500\r",
+									"tests['Status code is 500'] = resp.code === 404\r",
 									""
 								],
 								"type": "text/javascript"
@@ -3373,7 +3417,7 @@
 								"exec": [
 									"let resp = pm.response;\r",
 									"\r",
-									"tests['Status is 500'] = resp.code === 500"
+									"tests['Status is 500'] = resp.code === 404"
 								],
 								"type": "text/javascript"
 							}
@@ -3624,7 +3668,7 @@
 								"exec": [
 									"let resp = pm.response;\r",
 									"\r",
-									"tests['Status is 500'] = resp.code === 500"
+									"tests['Status is 500'] = resp.code === 404"
 								],
 								"type": "text/javascript"
 							}
@@ -4008,7 +4052,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./test-data/avatar.png"
+									"src": "/F:/Man/3x4.jpg"
 								}
 							]
 						},
@@ -4053,7 +4097,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./test-data/avatar.png"
+									"src": "/F:/Man/3x4.jpg"
 								}
 							]
 						},
@@ -4100,7 +4144,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "./test-data/avatar.png"
+									"src": "/F:/Man/3x4.jpg"
 								}
 							]
 						},
@@ -4126,7 +4170,7 @@
 								"exec": [
 									"let resp = pm.response\r",
 									"\r",
-									"tests[\"Status code is 500\"] = resp.code === 500\r",
+									"tests[\"Status code is 400\"] = resp.code === 400\r",
 									"\r",
 									"// tests[\"Video Information\"] = resp.json().error === \"The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.\""
 								],

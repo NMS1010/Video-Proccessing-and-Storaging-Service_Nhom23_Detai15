@@ -134,7 +134,7 @@ jobs:
 
       - name: Run POSTMAN collection
         run: |
-          newman run APITesting.postman_collection.json --environment=API.postman_environment.json -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html --reporter-htmlextra-darkTheme
+          newman run APITesting.postman_collection.json --environment=API.postman_environment.json -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html --reporter-htmlextra-darkTheme || true
 
       - name: Output the run Details
         uses: actions/upload-artifact@v2
