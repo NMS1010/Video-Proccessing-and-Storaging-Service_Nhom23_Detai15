@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: Pytest
+name: CI/CD pipeline for final project
 
 on:
    push:
@@ -13,10 +13,10 @@ permissions: read-all
 
 jobs:
    build:
-      name: Build and Run Test
+      name: Build and Run Pytest
       runs-on: ubuntu-latest
       steps:
-         - uses: actions/checkout@v2
+         - uses: actions/checkout@v3
          - name: Set up Python 3.7
            uses: actions/setup-python@v3
            with:
@@ -95,13 +95,13 @@ jobs:
               sudo chmod +x ./video-server/src/videoserver/lib/video_editor/script/capture_list_frames.sh
               pytest --html=report.html --self-contained-html
          - name: Upload Test Report
-           uses: actions/upload-artifact@v2
+           uses: actions/upload-artifact@v3
            with:
-              name: Test Report
+              name: PytestReport
               path: report.html
    test_api:
       needs: build
-      name: Test for environment
+      name: API Testing with Postman
       runs-on: ubuntu-latest
       steps:
          - uses: actions/checkout@v3
@@ -136,14 +136,14 @@ jobs:
          - name: Output the run Details
            uses: actions/upload-artifact@v3
            with:
-              name: RunReports
+              name: APITestingReport
               path: testResults
    scan:
-      name: Sonarqube - Code Quality Scan
+      name: Code Quality scan with Sonarqube
       needs: test_api
       runs-on: ubuntu-latest
       steps:
-         - uses: actions/checkout@v2
+         - uses: actions/checkout@v3
          - name: SonarCloud scan
            uses: sonarsource/sonarcloud-github-action@master
            env:
@@ -154,7 +154,7 @@ jobs:
       name: Deploy to EC2
       runs-on: ubuntu-latest
       steps:
-         - uses: actions/checkout@v2
+         - uses: actions/checkout@v3
          - name: SSH into EC2 instance + Deploy
            uses: appleboy/ssh-action@master
            with:
