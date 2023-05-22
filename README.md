@@ -1,6 +1,6 @@
 # Video-Proccessing-and-Storaging-Service
 
-# Project tham khảo: https://github.com/superdesk/video-server
+# Project gốc tham khảo: https://github.com/superdesk/video-server
 
 # Link Report:
 1. Báo cáo cuối kỳ: https://docs.google.com/document/d/1Z5GAFFelnkUP0pqBmEVgdWkDBrQwJW0yPogDbaatizc/edit?usp=sharing
